@@ -18,6 +18,11 @@ use Parsamirzaie\SheetsyncForWoocommerce\Admin\Sheetsync_For_Woocommerce_Admin;
 use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_I18n;
 use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_Loader;
 use Parsamirzaie\SheetsyncForWoocommerce\Public\Sheetsync_For_Woocommerce_Public;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The core plugin class.
  *

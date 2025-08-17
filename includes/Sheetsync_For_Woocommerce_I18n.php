@@ -14,6 +14,10 @@
 
 namespace Parsamirzaie\SheetsyncForWoocommerce\Includes;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Define the internationalization functionality.
  *

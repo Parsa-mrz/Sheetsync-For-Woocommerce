@@ -11,6 +11,10 @@
 
 namespace Parsamirzaie\SheetsyncForWoocommerce\Includes;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Fired during plugin deactivation.
  *
