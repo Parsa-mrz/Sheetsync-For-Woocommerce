@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -13,7 +12,7 @@
  * @package           Sheetsync_For_Woocommerce
  *
  * @wordpress-plugin
- * Plugin Name:       SheetSync for WooCommerce
+ * Plugin Name:       SheetSync For WooCommerce
  * Plugin URI:        https://parsamirzaie.com
  * Description:       The plugin syncs data from a Google Sheet to a WooCommerce store.
  * Version:           1.0.0
@@ -23,11 +22,20 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       sheetsync-for-woocommerce
  * Domain Path:       /languages
+ * Requires Plugins:  woocommerce
  */
+
+use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce;
+use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_Activator;
+use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_Deactivator;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
+}
+
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require __DIR__ . '/vendor/autoload.php';
 }
 
 /**
@@ -42,7 +50,6 @@ define( 'SHEETSYNC_FOR_WOOCOMMERCE_VERSION', '1.0.0' );
  * This action is documented in includes/class-sheetsync-for-woocommerce-activator.php
  */
 function activate_sheetsync_for_woocommerce() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-sheetsync-for-woocommerce-activator.php';
 	Sheetsync_For_Woocommerce_Activator::activate();
 }
 
@@ -51,18 +58,12 @@ function activate_sheetsync_for_woocommerce() {
  * This action is documented in includes/class-sheetsync-for-woocommerce-deactivator.php
  */
 function deactivate_sheetsync_for_woocommerce() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-sheetsync-for-woocommerce-deactivator.php';
 	Sheetsync_For_Woocommerce_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_sheetsync_for_woocommerce' );
 register_deactivation_hook( __FILE__, 'deactivate_sheetsync_for_woocommerce' );
 
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-sheetsync-for-woocommerce.php';
 
 /**
  * Begins execution of the plugin.
@@ -77,6 +78,5 @@ function run_sheetsync_for_woocommerce() {
 
 	$plugin = new Sheetsync_For_Woocommerce();
 	$plugin->run();
-
 }
 run_sheetsync_for_woocommerce();

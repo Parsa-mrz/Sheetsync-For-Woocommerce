@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -9,6 +8,8 @@
  * @package    Sheetsync_For_Woocommerce
  * @subpackage Sheetsync_For_Woocommerce/includes
  */
+
+namespace Parsamirzaie\SheetsyncForWoocommerce\Includes;
 
 /**
  * Fired during plugin activation.
@@ -30,7 +31,5 @@ class Sheetsync_For_Woocommerce_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
 	}
-
 }

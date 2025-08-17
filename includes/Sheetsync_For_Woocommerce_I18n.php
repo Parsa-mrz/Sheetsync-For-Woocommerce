@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -13,6 +12,8 @@
  * @subpackage Sheetsync_For_Woocommerce/includes
  */
 
+namespace Parsamirzaie\SheetsyncForWoocommerce\Includes;
+
 /**
  * Define the internationalization functionality.
  *
@@ -24,7 +25,7 @@
  * @subpackage Sheetsync_For_Woocommerce/includes
  * @author     Parsa Mirzaie <Mirzaie_parsa@protonmail.ch>
  */
-class Sheetsync_For_Woocommerce_i18n {
+class Sheetsync_For_Woocommerce_I18n {
 
 
 	/**
@@ -39,9 +40,5 @@ class Sheetsync_For_Woocommerce_i18n {
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
-
-
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -13,6 +12,12 @@
  * @subpackage Sheetsync_For_Woocommerce/includes
  */
 
+namespace Parsamirzaie\SheetsyncForWoocommerce\Includes;
+
+use Parsamirzaie\SheetsyncForWoocommerce\Admin\Sheetsync_For_Woocommerce_Admin;
+use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_I18n;
+use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_Loader;
+use Parsamirzaie\SheetsyncForWoocommerce\Public\Sheetsync_For_Woocommerce_Public;
 /**
  * The core plugin class.
  *
@@ -73,57 +78,10 @@ class Sheetsync_For_Woocommerce {
 			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'sheetsync-for-woocommerce';
-
-		$this->load_dependencies();
+		$this->loader      = new Sheetsync_For_Woocommerce_Loader();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
-	}
-
-	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - Sheetsync_For_Woocommerce_Loader. Orchestrates the hooks of the plugin.
-	 * - Sheetsync_For_Woocommerce_i18n. Defines internationalization functionality.
-	 * - Sheetsync_For_Woocommerce_Admin. Defines all hooks for the admin area.
-	 * - Sheetsync_For_Woocommerce_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sheetsync-for-woocommerce-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sheetsync-for-woocommerce-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sheetsync-for-woocommerce-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sheetsync-for-woocommerce-public.php';
-
-		$this->loader = new Sheetsync_For_Woocommerce_Loader();
-
 	}
 
 	/**
@@ -137,10 +95,9 @@ class Sheetsync_For_Woocommerce {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Sheetsync_For_Woocommerce_i18n();
+		$plugin_i18n = new Sheetsync_For_Woocommerce_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -156,7 +113,6 @@ class Sheetsync_For_Woocommerce {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
 	}
 
 	/**
@@ -172,7 +128,6 @@ class Sheetsync_For_Woocommerce {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 	}
 
 	/**
@@ -214,5 +169,4 @@ class Sheetsync_For_Woocommerce {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-PLUGIN_NAME="digi-tab"
+PLUGIN_NAME="SheetSync-For-WooCommerce"
 
 # +---------------------------+
 # |                           |

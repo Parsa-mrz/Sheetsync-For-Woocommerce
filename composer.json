@@ -1,0 +1,17 @@
+{
+    "name": "parsamirzaie/sheetsync-for-woocommerce",
+    "autoload": {
+        "psr-4": {
+            "Parsamirzaie\\SheetsyncForWoocommerce\\Includes\\": "Includes/",
+            "Parsamirzaie\\SheetsyncForWoocommerce\\Admin\\": "Admin/",
+            "Parsamirzaie\\SheetsyncForWoocommerce\\Public\\": "Public/"
+        }
+    },
+    "authors": [
+        {
+            "name": "parsamirzaie",
+            "email": "Mirzaie_parsa@protonmail.ch"
+        }
+    ],
+    "require": {}
+}

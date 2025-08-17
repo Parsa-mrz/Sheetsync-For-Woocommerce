@@ -1,4 +1,5 @@
 {
+    "core":null,
     "themes": [
         "https://downloads.wordpress.org/theme/hello-elementor.latest-stable.zip"
     ],
