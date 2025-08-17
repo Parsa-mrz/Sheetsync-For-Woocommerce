@@ -1,0 +1,8 @@
+README.md
+README.txt
+.git
+.DS_Store
+.wp-env.json
+.gitignore
+/bin/
+.distignore
