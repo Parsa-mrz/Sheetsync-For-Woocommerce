@@ -6,3 +6,5 @@ README.md
 /bin/
 .distignore
 .vscode/
+/node_modules/
+/build/

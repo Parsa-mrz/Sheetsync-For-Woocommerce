@@ -16,9 +16,15 @@ echo "Generating build directory..."
 rm -rf "$BUILD_PATH"
 mkdir -p "$DEST_PATH"
 
-# Fix: Ensure `find` works correctly and set a default value
+
+if [ -f "$PROJECT_PATH/package.json" ]; then
+    echo "Installing Node.js dependencies and running 'npm run build'..."
+    npm install --prefix "$PROJECT_PATH" || exit "$?"
+    npm run build --prefix "$PROJECT_PATH" || exit "$?"
+fi
+
 composer_dependencies=$(find "$PROJECT_PATH" -maxdepth 1 -type f -name 'composer.json' -print0 | xargs -0 wc -l | awk '{print $1}')
-composer_dependencies=${composer_dependencies:-0}  # Default to 0 if empty
+composer_dependencies=${composer_dependencies:-0}
 
 if [ "$composer_dependencies" -gt 0 ]; then
 	echo "Installing PHP dependencies..."
