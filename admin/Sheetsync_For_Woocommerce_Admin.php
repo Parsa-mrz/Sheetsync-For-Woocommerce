@@ -59,28 +59,6 @@ class Sheetsync_For_Woocommerce_Admin {
 	}
 
 	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Sheetsync_For_Woocommerce_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Sheetsync_For_Woocommerce_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'CSS/Sheetsync_For_Woocommerce_Admin.css', array(), $this->version, 'all' );
-	}
-
-	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    1.0.0
@@ -99,6 +77,52 @@ class Sheetsync_For_Woocommerce_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'JS/Sheetsync_For_Woocommerce_Admin.js', array( 'jquery' ), $this->version, false );
+		$asset_file = include SFW_PLUGIN_DIR . '/build/index.asset.php';
+
+		wp_enqueue_script(
+			'react-for-sheetsync-for-woocommerce',
+			SFW_PLUGIN_URL . '/build/index.js',
+			$asset_file['dependencies'],
+			$asset_file['version'],
+			array(
+				'in_footer' => true,
+			)
+		);
+
+		wp_enqueue_style( 'wp-components' );
+	}
+
+	/**
+	 * Registers a new admin menu item for the plugin.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function register_admin_menu() {
+		add_menu_page(
+			__( 'SheetSync', 'sheetsync-for-woocommerce' ),
+			__( 'SheetSync', 'sheetsync-for-woocommerce' ),
+			'manage_options',
+			'sheetsync-for-woocommerce',
+			array( $this, 'render_admin_page' ),
+			'dashicons-admin-site',
+			100
+		);
+	}
+
+	/**
+	 * Renders the HTML for the main admin page.
+	 *
+	 * This function serves as the callback for the admin menu page. It
+	 * creates a container for the React-based settings page.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function render_admin_page() {
+		printf(
+			'<div class="wrap" id="sheetsync-for-woocommerce-settings">%s</div>',
+			esc_html__( 'Loading…', 'sheetsync-for-woocommerce' )
+		);
 	}
 }

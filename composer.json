@@ -3,8 +3,7 @@
     "autoload": {
         "psr-4": {
             "Parsamirzaie\\SheetsyncForWoocommerce\\Includes\\": "Includes/",
-            "Parsamirzaie\\SheetsyncForWoocommerce\\Admin\\": "Admin/",
-            "Parsamirzaie\\SheetsyncForWoocommerce\\Public\\": "Public/"
+            "Parsamirzaie\\SheetsyncForWoocommerce\\Admin\\": "Admin/"
         }
     },
     "authors": [

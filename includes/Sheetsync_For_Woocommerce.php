@@ -85,6 +85,7 @@ class Sheetsync_For_Woocommerce {
 		$this->plugin_name = 'sheetsync-for-woocommerce';
 		$this->loader      = new Sheetsync_For_Woocommerce_Loader();
 		$this->set_locale();
+		$this->define_constants();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -116,8 +117,8 @@ class Sheetsync_For_Woocommerce {
 
 		$plugin_admin = new Sheetsync_For_Woocommerce_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_admin_menu' );
 	}
 
 	/**
@@ -128,11 +129,16 @@ class Sheetsync_For_Woocommerce {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
+	}
 
-		$plugin_public = new Sheetsync_For_Woocommerce_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+	/**
+	 * Define Constants.
+	 *
+	 * @since   1.0.0
+	 */
+	private function define_constants() {
+		define( 'SFW_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __DIR__ ) ) );
+		define( 'SFW_PLUGIN_URL', untrailingslashit( plugin_dir_url( __DIR__ ) ) );
 	}
 
 	/**
