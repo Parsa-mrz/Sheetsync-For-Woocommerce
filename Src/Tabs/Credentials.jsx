@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Card, message, Spin } from 'antd';
+import { Form, Input, Card, message, Spin, Upload, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
-async function saveOption(field, value, setSaving) {
-    setSaving(field);
+async function saveSpreadsheetId(value, setSaving) {
+    setSaving('spreadsheetId');
     try {
         const res = await fetch(
             `${window.wpApiSettings.root}sheetsync/v1/update-options`,
@@ -12,14 +13,14 @@ async function saveOption(field, value, setSaving) {
                     "Content-Type": "application/json",
                     "X-WP-Nonce": window.wpApiSettings.nonce,
                 },
-                body: JSON.stringify({ [field]: value }),
+                body: JSON.stringify({ spreadsheetId: value }),
             }
         );
         const data = await res.json();
         if (data.success) {
-            message.success(`${field} updated successfully!`);
+            message.success('Spreadsheet ID updated successfully!');
         } else {
-            message.error(`Failed to update ${field}`);
+            message.error('Failed to update Spreadsheet ID');
         }
     } catch (err) {
         console.error(err);
@@ -59,6 +60,23 @@ export default function Credentials() {
 
     if (loading) return <Spin tip="Loading..." style={{ display: 'block', margin: '100px auto' }} />;
 
+    const uploadProps = {
+        name: 'jsonFile',
+        action: `${window.wpApiSettings.root}sheetsync/v1/upload-credentials`,
+        headers: {
+            'X-WP-Nonce': window.wpApiSettings.nonce,
+        },
+        maxCount: 1,
+        accept: '.json',
+        onChange(info) {
+            if (info.file.status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully.`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+    };
+
     return (
         <Card
             title="Add Google Sheet Credentials"
@@ -66,29 +84,13 @@ export default function Credentials() {
         >
             <Form form={form} layout="vertical">
                 <Form.Item
-                    label="Client ID"
-                    name="clientId"
-                    rules={[{ required: true, message: 'Please enter your Client ID' }]}
+                    label="Google Service Account JSON Key"
+                    name="jsonFile"
+                    tooltip="Upload the JSON key file from your Google Cloud Service Account."
                 >
-                    <Input
-                        placeholder="Enter Google Client ID"
-                        autoComplete="off"
-                        disabled={saving === "clientId"}
-                        onBlur={(e) => saveOption("clientId", e.target.value, setSaving)}
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    label="Client Secret"
-                    name="clientSecret"
-                    rules={[{ required: true, message: 'Please enter your Client Secret' }]}
-                >
-                    <Input.Password
-                        placeholder="Enter Google Client Secret"
-                        disabled={saving === "clientSecret"}
-                        autoComplete="off"
-                        onBlur={(e) => saveOption("clientSecret", e.target.value, setSaving)}
-                    />
+                    <Upload {...uploadProps}>
+                        <Button icon={<UploadOutlined />}>Click to Upload JSON</Button>
+                    </Upload>
                 </Form.Item>
 
                 <Form.Item
@@ -100,7 +102,7 @@ export default function Credentials() {
                         placeholder="Enter your Google Spreadsheet ID"
                         disabled={saving === "spreadsheetId"}
                         autoComplete="off"
-                        onBlur={(e) => saveOption("spreadsheetId", e.target.value, setSaving)}
+                        onBlur={(e) => saveSpreadsheetId(e.target.value, setSaving)}
                     />
                 </Form.Item>
             </Form>
