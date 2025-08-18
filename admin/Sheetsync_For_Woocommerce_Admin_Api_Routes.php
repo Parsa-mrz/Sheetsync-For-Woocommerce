@@ -29,33 +29,44 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 		);
 	}
 
+	/**
+	 * Update plugin options dynamically.
+	 */
 	public function sheetsync_update_options( \WP_REST_Request $request ) {
-		$sheet_id   = sanitize_text_field( $request->get_param( 'sheet_id' ) );
-		$sheet_name = sanitize_text_field( $request->get_param( 'sheet_name' ) );
+		$params   = $request->get_json_params();
+		$response = array();
 
-		if ( $sheet_id ) {
-			update_option( 'sheetsync_sheet_id', $sheet_id );
-		}
-		if ( $sheet_name ) {
-			update_option( 'sheetsync_sheet_name', $sheet_name );
+		if ( ! empty( $params ) && is_array( $params ) ) {
+			foreach ( $params as $key => $value ) {
+				// Only allow known fields (prevent arbitrary option injection).
+				$allowed = array( 'clientId', 'clientSecret', 'spreadsheetId' );
+				if ( in_array( $key, $allowed, true ) ) {
+					update_option( "sheetsync_{$key}", sanitize_text_field( $value ) );
+					$response[ $key ] = get_option( "sheetsync_{$key}" );
+				}
+			}
 		}
 
 		return array(
 			'success' => true,
-			'data'    => array(
-				'sheet_id'   => get_option( 'sheetsync_sheet_id' ),
-				'sheet_name' => get_option( 'sheetsync_sheet_name' ),
-			),
+			'data'    => $response,
 		);
 	}
 
+	/**
+	 * Get all plugin options dynamically.
+	 */
 	public function sheetsync_get_options( \WP_REST_Request $request ) {
+		$allowed_keys = array( 'clientId', 'clientSecret', 'spreadsheetId' );
+		$data         = array();
+
+		foreach ( $allowed_keys as $key ) {
+			$data[ $key ] = get_option( "sheetsync_{$key}", '' );
+		}
+
 		return array(
 			'success' => true,
-			'data'    => array(
-				'sheet_id'   => get_option( 'sheetsync_sheet_id' ),
-				'sheet_name' => get_option( 'sheetsync_sheet_name' ),
-			),
+			'data'    => $data,
 		);
 	}
 }
