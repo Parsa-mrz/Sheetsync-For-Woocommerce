@@ -1,8 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { Spin, Card, Form, Input, Table, Typography, Row, Col } from "antd";
+import { Spin, Card, Form, Input, Table, Typography, Row, Col, Button, message } from "antd";
 import Credentials from "../Tabs/Credentials";
 
 const { Title, Paragraph } = Typography;
+
+async function resetSheetHeadline() {
+    try {
+        const res = await fetch(
+            `${window.wpApiSettings.root}sheetsync/v1/update-options`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-WP-Nonce": window.wpApiSettings.nonce,
+                },
+                body: JSON.stringify({ initial_setup_done: false }),
+
+            }
+        );
+        const data = await res.json();
+        if (data.success) {
+            message.success('Headline has reset');
+        } else {
+            message.error('Failed to save setup status.');
+        }
+    } catch (error) {
+        console.error('API Error:', error);
+        message.error('An error occurred during API call.');
+    }
+}
 
 export default function MainDashboard() {
     const [loading, setLoading] = useState(true);
@@ -79,6 +105,14 @@ export default function MainDashboard() {
             <Row gutter={16}>
                 <Col span={12}>
                     <Credentials />
+                    <Card
+                        title="General Tools"
+                        style={{ maxWidth: 600, margin: '40px auto' }}
+                    >
+                        <Button onClick={() => { resetSheetHeadline() }}>
+                            Reset Google Sheet Headeline
+                        </Button>
+                    </Card>
                 </Col>
                 <Col span={12}>
                     <Card title="Service Account Details">
