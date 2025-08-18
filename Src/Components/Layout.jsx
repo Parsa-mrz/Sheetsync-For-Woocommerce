@@ -22,7 +22,6 @@ export default function Layout() {
                 }
             } catch (err) {
                 console.error("Failed to fetch setup status:", err);
-                // Assume incomplete if fetch fails
             } finally {
                 setLoading(false);
             }
