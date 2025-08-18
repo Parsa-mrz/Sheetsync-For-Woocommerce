@@ -259,7 +259,7 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 	 * @param \WP_REST_Request $request The REST API request object.
 	 * @return \WP_REST_Response A WP_REST_Response object with the upload status.
 	 */
-	public function sheetsync_upload_json( \WP_REST_Request $request ) {
+	public function upload_json( \WP_REST_Request $request ) {
 		if ( ! function_exists( 'wp_handle_upload' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
