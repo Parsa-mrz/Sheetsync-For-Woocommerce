@@ -7,4 +7,3 @@ README.md
 .distignore
 .vscode/
 /node_modules/
-/build/
