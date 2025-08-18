@@ -2,14 +2,34 @@
 
 namespace Parsamirzaie\SheetsyncForWoocommerce\Admin;
 
+/**
+ * Class Sheetsync_For_Woocommerce_Admin_Api_Routes.
+ *
+ * Registers and handles custom REST API routes for the Sheetsync for WooCommerce plugin.
+ * This class manages options updates, retrieval, and credentials file uploads.
+ */
 class Sheetsync_For_Woocommerce_Admin_Api_Routes {
+	/**
+	 * Registers all custom REST API routes for the plugin.
+	 *
+	 * This method hooks into the `rest_api_init` action to define the
+	 * following endpoints:
+	 * - `/update-options` (POST): To dynamically update plugin options.
+	 * - `/get-options` (GET): To retrieve all plugin options.
+	 * - `/upload-credentials` (POST): To handle the upload of a JSON credentials file.
+	 * - `/get-credentials-data` (GET): To retrieve the contents of the credentials file.
+	 *
+	 * All routes require the user to have 'manage_options' capability.
+	 *
+	 * @return void
+	 */
 	public function register_rest_api_routes() {
 		register_rest_route(
 			'sheetsync/v1',
 			'/update-options',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( $this, 'sheetsync_update_options' ),
+				'callback'            => array( $this, 'update_options' ),
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -21,7 +41,7 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 			'/get-options',
 			array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'sheetsync_get_options' ),
+				'callback'            => array( $this, 'get_options' ),
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -33,7 +53,7 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 			'/upload-credentials',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( $this, 'sheetsync_upload_json' ),
+				'callback'            => array( $this, 'upload_json' ),
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -45,7 +65,7 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 			'/get-credentials-data',
 			array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'sheetsync_get_json_data' ),
+				'callback'            => array( $this, 'get_json_data' ),
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -55,17 +75,22 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 
 	/**
 	 * Update plugin options dynamically.
+	 *
+	 * Handles the `POST /sheetsync/v1/update-options` endpoint.
+	 * It accepts a JSON body with key-value pairs of options to update.
+	 *
+	 * @param \WP_REST_Request $request The REST API request object.
+	 * @return \WP_REST_Response The response object with success status and updated data.
 	 */
-	public function sheetsync_update_options( \WP_REST_Request $request ) {
+	public function update_options( \WP_REST_Request $request ) {
 		$params   = $request->get_json_params();
 		$response = array();
 
 		if ( ! empty( $params ) && is_array( $params ) ) {
 			foreach ( $params as $key => $value ) {
-				$allowed = array( 'spreadsheetId', 'setup_complete' );
+				$allowed = array( 'spreadsheetId', 'setup_complete', 'initial_setup_done' );
 				if ( in_array( $key, $allowed, true ) ) {
-					// Correct sanitization based on the key
-					if ( 'setup_complete' === $key ) {
+					if ( 'setup_complete' === $key || 'initial_setup_done' === $key ) {
 						update_option( "sheetsync_{$key}", boolval( $value ) );
 					} else {
 						update_option( "sheetsync_{$key}", sanitize_text_field( $value ) );
@@ -83,10 +108,18 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 		);
 	}
 
+
+
 	/**
 	 * Get all plugin options dynamically.
+	 *
+	 * Handles the `GET /sheetsync/v1/get-options` endpoint.
+	 * Retrieves a set of predefined plugin options and the status of the credentials file.
+	 *
+	 * @param \WP_REST_Request $request The REST API request object.
+	 * @return \WP_REST_Response The response object with success status and a data array.
 	 */
-	public function sheetsync_get_options( \WP_REST_Request $request ) {
+	public function get_options( \WP_REST_Request $request ) {
 		$allowed_keys = array( 'spreadsheetId' );
 		$data         = array();
 
@@ -108,8 +141,17 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 		);
 	}
 
-	public function sheetsync_get_json_data( \WP_REST_Request $request ) {
-		$credentials_path = trailingslashit( plugin_dir_path( __DIR__ ) ) . 'credentials/gsheets-credentials.json';
+	/**
+	 * Retrieves the data from the JSON credentials file.
+	 *
+	 * Handles the `GET /sheetsync/v1/get-credentials-data` endpoint.
+	 * Reads the `gsheets-credentials.json` file and returns its content.
+	 *
+	 * @param \WP_REST_Request $request The REST API request object.
+	 * @return \WP_REST_Response A WP_REST_Response object containing the data or an error message.
+	 */
+	public function get_json_data( \WP_REST_Request $request ) {
+		$credentials_path = SFW_PLUGIN_DIR . '/credentials/gsheets-credentials.json';
 
 		if ( ! file_exists( $credentials_path ) ) {
 			return new \WP_REST_Response(
@@ -143,6 +185,16 @@ class Sheetsync_For_Woocommerce_Admin_Api_Routes {
 		);
 	}
 
+	/**
+	 * Handles the upload of a JSON credentials file.
+	 *
+	 * Handles the `POST /sheetsync/v1/upload-credentials` endpoint.
+	 * It validates the uploaded file type, creates a credentials directory if it doesn't exist,
+	 * and moves the uploaded file to its final destination.
+	 *
+	 * @param \WP_REST_Request $request The REST API request object.
+	 * @return \WP_REST_Response A WP_REST_Response object with the upload status.
+	 */
 	public function sheetsync_upload_json( \WP_REST_Request $request ) {
 		if ( ! function_exists( 'wp_handle_upload' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
