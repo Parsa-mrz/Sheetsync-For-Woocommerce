@@ -59,6 +59,27 @@ class Sheetsync_For_Woocommerce_Admin {
 	}
 
 	/**
+	 * Register the stylesheets for the admin area.
+	 *
+	 * This method enqueues the main admin stylesheet and the necessary
+	 * styles for the WordPress color picker.
+	 *
+	 * @since    1.0.0
+	 * @return   void
+	 */
+	public function enqueue_styles() {
+		$asset_file = include SFW_PLUGIN_DIR . '/build/index.asset.php';
+
+		wp_enqueue_style(
+			'tailwind-for-sheetsync-for-woocommerce',
+			SFW_PLUGIN_URL . '/build/index.css',
+			array(),
+			$asset_file['version'],
+			'all'
+		);
+	}
+
+	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    1.0.0

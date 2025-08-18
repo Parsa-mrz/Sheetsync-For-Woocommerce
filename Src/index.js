@@ -2,6 +2,7 @@ import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
 import { StrictMode } from 'react';
 import App from './App.jsx';
+import './index.css';
 
 domReady(() => {
     const root = createRoot(

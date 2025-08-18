@@ -1,9 +1,12 @@
-
+import SettingForm from "./Components/SettingForm";
+import Layout from "./Components/Layout";
 
 export default function App() {
     return (
-        <h1>
-            Admin setting Page
-        </h1>
+        <>
+            <Layout>
+                <SettingForm />
+            </Layout>
+        </>
     );
 }

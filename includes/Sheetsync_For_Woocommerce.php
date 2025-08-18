@@ -15,9 +15,9 @@
 namespace Parsamirzaie\SheetsyncForWoocommerce\Includes;
 
 use Parsamirzaie\SheetsyncForWoocommerce\Admin\Sheetsync_For_Woocommerce_Admin;
+use Parsamirzaie\SheetsyncForWoocommerce\Admin\Sheetsync_For_Woocommerce_Admin_Api_Routes;
 use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_I18n;
 use Parsamirzaie\SheetsyncForWoocommerce\Includes\Sheetsync_For_Woocommerce_Loader;
-use Parsamirzaie\SheetsyncForWoocommerce\Public\Sheetsync_For_Woocommerce_Public;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -115,10 +115,13 @@ class Sheetsync_For_Woocommerce {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Sheetsync_For_Woocommerce_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin                 = new Sheetsync_For_Woocommerce_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin_rest_api_routes = new Sheetsync_For_Woocommerce_Admin_Api_Routes();
 
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_admin_menu' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin_rest_api_routes, 'register_rest_api_routes' );
 	}
 
 	/**
